@@ -12,7 +12,7 @@ CUSTID INT
 
 CREATE TABLE PRODUCT0136 (
 PRODID INT
-, PRODNAME  NVARCHAR(100)
+, PRODNAME  NVARCHAR
 , SELLING_PRICE   MONEY
 , SALES_YTD MONEY
 , PRIMARY KEY     (PRODID));
@@ -76,7 +76,7 @@ END;
 
 GO
 
-create PROCEDURE GET_CUSTOMER_STRING @pcustid Int as 
+create PROCEDURE GET_CUSTOMER_STRING0136 @pcustid Int as 
 BEGIN
 DECLARE @NameOfCust nvarchar(100);
 SET @NameOfCust = (SELECT CUSTNAME FROM CUSTOMER0136 WHERE CUSTID = @pcustid);
@@ -84,5 +84,32 @@ DECLARE @SalesOfCust INT;
 SET @SalesOfCust = (SELECT SALES_YTD FROM CUSTOMER0136 WHERE CUSTID = @pcustid);
 DECLARE @StatusOfCust NVARCHAR(7);
 SET @StatusOfCust = (SELECT STATUS FROM CUSTOMER0136 WHERE CUSTID = @pcustid);
-SELECT CONCAT('id of customer'+ @pcustid + 'name of customer' + @NameOfCust + 'sales of customer' + @SalesOfCust + 'status of customer' + @StatusOfCust + ';');
+SELECT CONCAT('custid:' + @pcustid + ' name:' + @NameOfCust + ' status:' + @StatusOfCust +  ' sales_ytd:' + @SalesOfCust + ';');
+END;
+
+GO
+
+create PROCEDURE UPD_CUST_SALESYTD0136 @pcustid Int,@pamt Int as 
+BEGIN
+UPDATE CUSTOMER0136 set SALES_YTD = @pamt WHERE @pcustid = CUSTID
+END;
+
+GO
+
+create PROCEDURE GET_PRODUCT_STRING013 @pprodid Int as 
+BEGIN
+DECLARE @Name NVARCHAR
+SET @Name = (SELECT PRODNAME FROM PRODUCT0136 WHERE PRODID = @pprodid)
+DECLARE @Price money
+SET @Price = (SELECT SELLING_PRICE FROM PRODUCT0136 WHERE PRODID = @pprodid)
+DECLARE @salesytd money
+SET @salesytd = (SELECT SALES_YTD FROM PRODUCT0136 WHERE PRODID = @pprodid)
+SELECT CONCAT('Name:' + ' Price:' + @Price + ' salesytd:' + @sales_ytd)
+END;
+
+GO
+
+create PROCEDURE  UPD_PROD_SALESYTD0136 @pprodid Int,@pamt Int as 
+BEGIN
+UPDATE PRODUCT0136 set SALES_YTD = @pamt WHERE @pprodid = PRODID
 END;
