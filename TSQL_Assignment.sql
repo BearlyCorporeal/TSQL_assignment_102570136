@@ -113,3 +113,12 @@ create PROCEDURE  UPD_PROD_SALESYTD0136 @pprodid Int,@pamt Int as
 BEGIN
 UPDATE PRODUCT0136 set SALES_YTD = @pamt WHERE @pprodid = PRODID
 END;
+
+GO
+
+create PROCEDURE UPD_CUSTOMER_STATUS0136 @pcustid Int,@pstatus Nvarchar as 
+BEGIN
+UPDATE CUSTOMER0136 set STATUS = @pstatus WHERE @pcustid = CUSTID
+END;
+
+
