@@ -97,7 +97,7 @@ END CATCH;
 
 GO
 
-create PROCEDURE DELETE_ALL_PRODUCTS_FROM_DB0136 as 
+create PROCEDURE DELETE_ALL_PRODUCTS0136 as 
 BEGIN TRY
 DECLARE @NumOfRows Int; 
 SELECT @NumOfRows = count(*) FROM PRODUCT0136;
@@ -205,29 +205,61 @@ GO
 
 create PROCEDURE UPD_CUSTOMER_STATUS0136 @pcustid Int,@pstatus Nvarchar as 
 BEGIN TRY
-IF @@ROWCOUNT = 0 THROW 50120, 'Customer ID not found', 1;
 UPDATE CUSTOMER0136 set STATUS = @pstatus WHERE @pcustid = CUSTID
+IF @@ROWCOUNT = 0 THROW 50120, 'Customer ID not found', 1;
 END TRY
 Begin CATCH
 END CATCH;
 
 GO
 
-create PROCEDURE GET_ALL_CUSTOMERS0136 as 
+create PROCEDURE ADD_SIMPLE_SALE0136 @pcustid Int, @pprodid Int , @pqty Int as 
 BEGIN TRY
-select * FROM CUSTOMER0136
+DECLARE @pprice int;
+set @pprice =(select PRICE FROM PRODUCT0136 WHERE PRODID = @pprodid);
+declare @amount int;
+set @amount = @pqty * @pprice
+DECLARE @StatusOfCust NVARCHAR(7);
+declare @pid Int;
+SET @pid = @pprodid;
+declare @cid Int;
+SET @cid = @pcustid;
+SET @StatusOfCust = (SELECT STATUS FROM CUSTOMER0136 WHERE CUSTID = @pcustid);
+IF @StatusOfCust != 'OK' THROW 50150, 'Customer status is not OK', 1;
+EXECUTE UPD_PROD_SALESYTD0136 @pprodid = @pid,@pamt = @amount; 
+EXECUTE UPD_CUST_SALESYTD0136 @pcustid = @cid,@pamt = @amount; 
+INSERT INTO SALE0136(SALEID,CUSTID,PRODID,QTY,PRICE) VALUES(@pcustid,@pprodid,@pqty,@pprice)
 END TRY
 Begin CATCH
 END CATCH;
 
 GO
 
-create PROCEDURE GET_ALL_PRODUCTS0136 as 
+create PROCEDURE GET_ALL_CUSTOMERS0136 @POUTCUR	Cursor as 
 BEGIN TRY
-select * FROM PRODUCT0136
+set @POUTCUR = (select * FROM CUSTOMER0136)
 END TRY
 Begin CATCH
 END CATCH;
+
+GO
+
+create PROCEDURE GET_ALL_PRODUCTS0136 @POUTCUR	Cursor as 
+BEGIN TRY
+set @POUTCUR = (select * FROM PRODUCT0136)
+END TRY
+Begin CATCH
+END CATCH;
+
+GO
+
+create PROCEDURE ADD_COMPLEX_SALE0136 @pcustid Int, @pprodid Int , @pqty Int, @pdate Nvarchar as 
+BEGIN TRY
+INSERT INTO SALE0136(SALEID,CUSTID,PRODID,QTY,PRICE,SALEDATE) VALUES(   ,@pcustid,@pprodid,@pqty,@pprice,@pdate)
+END TRY
+Begin CATCH
+END CATCH;
+
 
 GO
 
